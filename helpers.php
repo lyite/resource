@@ -133,8 +133,13 @@ if (!function_exists("request_curl")) {
         }
 
         $method = mb_strtoupper($method);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method); // 设置请求方式
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // 设置请求数据
+        if ($method == 'GET' && $data) {
+            if (is_array($data)) $data = http_build_query($data);
+            $url .= '?' . $data;
+        } else {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method); // 设置请求方式
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data); // 设置请求数据
+        }
 
         curl_setopt($ch, CURLOPT_URL, $url); // 设置访问的 URL
         curl_setopt($ch, CURLOPT_TIMEOUT, 30); // 超时时间（秒）
